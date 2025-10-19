@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "voice-md",
+	"name": "Voice MD",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"description": "Record audio and transcribe it to markdown using OpenAI Whisper API.",
+	"author": "Deniz Okcu",
+	"authorUrl": "https://github.com/DenizOkcu",
+	"fundingUrl": "https://github.com/sponsors/DenizOkcu",
+	"isDesktopOnly": true
 }
