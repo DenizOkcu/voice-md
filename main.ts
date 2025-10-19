@@ -32,6 +32,7 @@ export default class VoiceMDPlugin extends Plugin {
 		this.addCommand({
 			id: 'start-voice-recording',
 			name: 'Start Voice Recording',
+			icon: 'voicemail',
 			editorCallback: (editor: Editor) => {
 				const voiceCommand = new VoiceCommand(this.app, this.settings);
 				voiceCommand.execute(editor);
