@@ -56,6 +56,48 @@ export class OpenAIClient {
 	}
 
 	/**
+	 * Structure raw text into formatted markdown using OpenAI chat completions
+	 * @param rawText The raw transcription text to structure
+	 * @param model The GPT model to use (e.g., 'gpt-4o-mini', 'gpt-4o')
+	 * @param customPrompt Optional custom system prompt to override default
+	 * @returns Formatted markdown text
+	 */
+	async structureText(
+		rawText: string,
+		model: string,
+		customPrompt?: string
+	): Promise<string> {
+		try {
+			const systemPrompt = customPrompt ||
+				"You are a helpful assistant that formats voice transcriptions into well-structured markdown. " +
+				"Use appropriate headings (##, ###), bullet points, numbered lists, and paragraphs. " +
+				"Preserve all content from the original transcription while improving readability.";
+
+			const completion = await this.client.chat.completions.create({
+				model: model,
+				messages: [
+					{
+						role: "system",
+						content: systemPrompt
+					},
+					{
+						role: "user",
+						content: `Format the following transcription as clear markdown:\n\n${rawText}`
+					}
+				],
+				temperature: 0.3,
+				max_tokens: 4096
+			});
+
+			return completion.choices[0].message.content || rawText;
+
+		} catch (error) {
+			// Convert to VoiceMDError and throw
+			throw ErrorHandler.fromOpenAIError(error, true);
+		}
+	}
+
+	/**
 	 * Test the API key by making a minimal request
 	 * @returns true if the API key is valid
 	 */

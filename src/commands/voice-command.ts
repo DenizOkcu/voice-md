@@ -1,4 +1,4 @@
-import { App, Editor, Notice } from 'obsidian';
+import { App, Editor, Notice, moment } from 'obsidian';
 import { RecordingModal } from '../audio/audio-modal';
 import { OpenAIClient } from '../api/openai-client';
 import { ErrorHandler } from '../utils/error-handler';
@@ -48,7 +48,7 @@ export class VoiceCommand {
 	 */
 	private async handleRecording(audioBlob: Blob, editor: Editor): Promise<void> {
 		// Show processing notice
-		const notice = new Notice('Transcribing audio...', 0); // 0 = don't auto-dismiss
+		let notice = new Notice('Transcribing audio...', 0); // 0 = don't auto-dismiss
 
 		try {
 			// Create OpenAI client
@@ -62,14 +62,65 @@ export class VoiceCommand {
 				language: this.settings.language
 			});
 
-			// Hide processing notice
-			notice.hide();
+			// Check if transcription is empty
+			if (!result.text || result.text.trim() === '') {
+				notice.hide();
+				new Notice('Transcription was empty', 3000);
+				return;
+			}
 
-			// Insert transcribed text at cursor position
-			editor.replaceSelection(result.text);
+			// Check if post-processing is enabled
+			if (this.settings.enablePostProcessing) {
+				// Update notice to show structuring
+				notice.hide();
+				notice = new Notice('Structuring text...', 0);
 
-			// Show success notice
-			new Notice('✓ Transcription complete!', 3000);
+				try {
+					// Structure the text using chat completions
+					const structuredText = await client.structureText(
+						result.text,
+						this.settings.chatModel,
+						this.settings.postProcessingPrompt
+					);
+
+					// Hide processing notice
+					notice.hide();
+
+					// Create both raw and structured files
+					await this.createTranscriptionFiles(
+						result.text,
+						structuredText
+					);
+
+					// Insert structured text at cursor position (backward compatibility)
+					editor.replaceSelection(structuredText);
+
+					// Show success notice with file links
+					new Notice(
+						`✓ Transcription complete! Files saved to Voice Transcriptions/`,
+						5000
+					);
+
+				} catch (postProcessingError) {
+					// Post-processing failed, fallback to raw-only mode
+					notice.hide();
+
+					// Insert raw text at cursor
+					editor.replaceSelection(result.text);
+
+					// Handle error (will show user-friendly message)
+					ErrorHandler.handle(postProcessingError);
+				}
+			} else {
+				// Post-processing disabled, use current behavior
+				notice.hide();
+
+				// Insert transcribed text at cursor position
+				editor.replaceSelection(result.text);
+
+				// Show success notice
+				new Notice('✓ Transcription complete!', 3000);
+			}
 
 		} catch (error) {
 			// Hide processing notice
@@ -78,5 +129,41 @@ export class VoiceCommand {
 			// Handle error with user-friendly message
 			ErrorHandler.handle(error);
 		}
+	}
+
+	/**
+	 * Create both raw and structured transcription files with cross-links
+	 * @param rawText The raw transcription text
+	 * @param structuredText The structured markdown text
+	 * @returns Object containing paths to both created files
+	 */
+	private async createTranscriptionFiles(
+		rawText: string,
+		structuredText: string
+	): Promise<{ rawPath: string; structuredPath: string }> {
+		// Generate timestamp for file naming
+		const timestamp = moment().format('YYYY-MM-DD-HHmmss');
+
+		// Define folder path
+		const folderPath = 'Voice Transcriptions';
+
+		// Check if folder exists, create if not
+		const folderExists = this.app.vault.getAbstractFileByPath(folderPath);
+		if (!folderExists) {
+			await this.app.vault.createFolder(folderPath);
+		}
+
+		// Define file paths
+		const rawPath = `${folderPath}/transcription-${timestamp}-raw.md`;
+		const structuredPath = `${folderPath}/transcription-${timestamp}.md`;
+
+		// Create raw file
+		await this.app.vault.create(rawPath, rawText);
+
+		// Create structured file with cross-link to raw
+		const structuredContent = `> Raw transcription: [[transcription-${timestamp}-raw]]\n\n${structuredText}`;
+		await this.app.vault.create(structuredPath, structuredContent);
+
+		return { rawPath, structuredPath };
 	}
 }
