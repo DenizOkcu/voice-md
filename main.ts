@@ -5,6 +5,9 @@ import { VoiceMDSettings } from './src/types';
 const DEFAULT_SETTINGS: VoiceMDSettings = {
 	openaiApiKey: '',
 	whisperModel: 'whisper-1',
+	chatModel: 'gpt-4o-mini',
+	enablePostProcessing: false,
+	postProcessingPrompt: undefined,
 	language: undefined,
 	maxRecordingDuration: 300
 }
@@ -102,5 +105,42 @@ class VoiceMDSettingTab extends PluginSettingTab {
 					this.plugin.settings.language = value || undefined;
 					await this.plugin.saveSettings();
 				}));
+
+		new Setting(containerEl)
+			.setName('Enable Post-Processing')
+			.setDesc('Structure transcriptions into formatted markdown using GPT. Creates two files: raw and structured. This feature makes additional API calls.')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enablePostProcessing)
+				.onChange(async (value) => {
+					this.plugin.settings.enablePostProcessing = value;
+					await this.plugin.saveSettings();
+					// Refresh display to show/hide dependent settings
+					this.display();
+				}));
+
+		// Show chat model and custom prompt settings only if post-processing is enabled
+		if (this.plugin.settings.enablePostProcessing) {
+			new Setting(containerEl)
+				.setName('Chat Model')
+				.setDesc('OpenAI model for post-processing (e.g., gpt-4o-mini, gpt-4o). Note: Adds cost per transcription.')
+				.addText(text => text
+					.setPlaceholder('gpt-4o-mini')
+					.setValue(this.plugin.settings.chatModel)
+					.onChange(async (value) => {
+						this.plugin.settings.chatModel = value || 'gpt-4o-mini';
+						await this.plugin.saveSettings();
+					}));
+
+			new Setting(containerEl)
+				.setName('Custom Formatting Prompt')
+				.setDesc('Override the default prompt for structuring. Leave blank to use default.')
+				.addTextArea(text => text
+					.setPlaceholder('Leave blank for default prompt')
+					.setValue(this.plugin.settings.postProcessingPrompt || '')
+					.onChange(async (value) => {
+						this.plugin.settings.postProcessingPrompt = value || undefined;
+						await this.plugin.saveSettings();
+					}));
+		}
 	}
 }

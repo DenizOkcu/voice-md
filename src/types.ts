@@ -5,6 +5,9 @@
 export interface VoiceMDSettings {
 	openaiApiKey: string;
 	whisperModel: 'whisper-1';
+	chatModel: string;
+	enablePostProcessing: boolean;
+	postProcessingPrompt?: string;
 	language?: string;
 	maxRecordingDuration: number;
 }
@@ -32,4 +35,5 @@ export type VoiceMDError =
 	| { type: 'PERMISSION_DENIED'; message: string }
 	| { type: 'API_ERROR'; code: string; message: string }
 	| { type: 'NETWORK_ERROR'; message: string }
-	| { type: 'INVALID_API_KEY'; message: string };
+	| { type: 'INVALID_API_KEY'; message: string }
+	| { type: 'POST_PROCESSING_ERROR'; message: string };

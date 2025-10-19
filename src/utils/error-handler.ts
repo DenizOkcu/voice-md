@@ -49,6 +49,9 @@ export class ErrorHandler {
 			case 'NETWORK_ERROR':
 				return `Network error: ${error.message}. Please check your internet connection.`;
 
+			case 'POST_PROCESSING_ERROR':
+				return `Post-processing failed: ${error.message}. Saved raw transcription only.`;
+
 			default:
 				return 'An unknown error occurred';
 		}
@@ -68,8 +71,10 @@ export class ErrorHandler {
 
 	/**
 	 * Create a VoiceMDError from an OpenAI API error
+	 * @param error The error from OpenAI SDK
+	 * @param isPostProcessing Whether this error is from post-processing (chat) vs transcription
 	 */
-	static fromOpenAIError(error: any): VoiceMDError {
+	static fromOpenAIError(error: any, isPostProcessing = false): VoiceMDError {
 		if (error?.status === 401 || error?.status === 403) {
 			return {
 				type: 'INVALID_API_KEY',
@@ -78,6 +83,12 @@ export class ErrorHandler {
 		}
 
 		if (error?.status === 429) {
+			if (isPostProcessing) {
+				return {
+					type: 'POST_PROCESSING_ERROR',
+					message: 'Rate limit exceeded. Please wait a moment and try again.'
+				};
+			}
 			return {
 				type: 'API_ERROR',
 				code: '429',
@@ -85,7 +96,20 @@ export class ErrorHandler {
 			};
 		}
 
+		if (error?.status === 404 && isPostProcessing) {
+			return {
+				type: 'POST_PROCESSING_ERROR',
+				message: 'Invalid chat model. Please check your settings.'
+			};
+		}
+
 		if (error?.status >= 500) {
+			if (isPostProcessing) {
+				return {
+					type: 'POST_PROCESSING_ERROR',
+					message: 'OpenAI service is temporarily unavailable. Please try again later.'
+				};
+			}
 			return {
 				type: 'API_ERROR',
 				code: String(error.status),
@@ -97,6 +121,13 @@ export class ErrorHandler {
 			return {
 				type: 'NETWORK_ERROR',
 				message: 'Unable to reach OpenAI servers. Please check your internet connection.'
+			};
+		}
+
+		if (isPostProcessing) {
+			return {
+				type: 'POST_PROCESSING_ERROR',
+				message: error?.message || 'An error occurred while structuring text'
 			};
 		}
 
