@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-voice-md",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Record audio and transcribe it to markdown using OpenAI Whisper API",
 	"main": "main.js",
 	"scripts": {
@@ -8,7 +8,14 @@
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": ["obsidian", "plugin", "voice", "transcription", "whisper", "openai"],
+	"keywords": [
+		"obsidian",
+		"plugin",
+		"voice",
+		"transcription",
+		"whisper",
+		"openai"
+	],
 	"author": "Deniz Okcu",
 	"license": "MIT",
 	"repository": {
