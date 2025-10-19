@@ -1,12 +1,13 @@
 {
 	"name": "obsidian-voice-md",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "Record audio and transcribe it to markdown using OpenAI Whisper API",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+    	"update-version": "node update-version.mjs"
 	},
 	"keywords": [
 		"obsidian",
