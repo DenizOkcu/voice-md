@@ -37,7 +37,7 @@ export class OpenAIClient {
 			// gpt-4o-transcribe-diarize: Supports speaker diarization
 			// gpt-4o-mini-transcribe: Fast, cost-effective standard transcription
 			const model = enableMeetingMode ? 'gpt-4o-transcribe-diarize' : 'gpt-4o-mini-transcribe';
-			const responseFormat = 'json'; // Both models use json format
+			const responseFormat = enableMeetingMode ? 'diarized_json' : 'json';
 
 			// Build transcription parameters
 			const transcriptionParams: any = {

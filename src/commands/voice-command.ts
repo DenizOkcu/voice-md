@@ -186,9 +186,8 @@ export class VoiceCommand {
 			if (segment.speaker && segment.speaker !== currentSpeaker) {
 				// Speaker changed
 				currentSpeaker = segment.speaker;
-				// Convert "SPEAKER_00" to "Speaker 1"
-				const speakerNum = parseInt(segment.speaker.split('_')[1]) + 1;
-				formatted += `\n\n**Speaker ${speakerNum}:** `;
+				// Convert speaker letter (A, B, C...) to display format (Speaker A, Speaker B, etc.)
+				formatted += `\n\n**Speaker ${segment.speaker}:** `;
 			}
 			formatted += segment.text.trim() + ' ';
 		}
