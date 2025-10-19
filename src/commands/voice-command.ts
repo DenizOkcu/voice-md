@@ -35,8 +35,8 @@ export class VoiceCommand {
 		const modal = new RecordingModal(
 			this.app,
 			this.settings.maxRecordingDuration,
-			async (audioBlob) => {
-				await this.handleRecording(audioBlob, editor);
+			async (audioBlob, meetingMode) => {
+				await this.handleRecording(audioBlob, editor, meetingMode);
 			},
 			this.settings.autoStartRecording
 		);
@@ -47,27 +47,32 @@ export class VoiceCommand {
 	/**
 	 * Handle the recorded audio blob: transcribe and insert into editor
 	 */
-	private async handleRecording(audioBlob: Blob, editor: Editor): Promise<void> {
+	private async handleRecording(audioBlob: Blob, editor: Editor, meetingMode: boolean): Promise<void> {
 		// Show processing notice
 		let notice = new Notice('Transcribing audio...', 0); // 0 = don't auto-dismiss
 
 		try {
 			// Create OpenAI client
-			const client = new OpenAIClient(
-				this.settings.openaiApiKey,
-				this.settings.whisperModel
-			);
+			const client = new OpenAIClient(this.settings.openaiApiKey);
 
 			// Transcribe audio
-			const result = await client.transcribe(audioBlob, {
-				language: this.settings.language
-			});
+			const result = await client.transcribe(
+				audioBlob,
+				{ language: this.settings.language },
+				meetingMode
+			);
 
 			// Check if transcription is empty
 			if (!result.text || result.text.trim() === '') {
 				notice.hide();
 				new Notice('Transcription was empty', 3000);
 				return;
+			}
+
+			// Format with speaker labels if meeting mode enabled
+			let formattedText = result.text;
+			if (meetingMode && result.segments) {
+				formattedText = this.formatWithSpeakers(result.segments);
 			}
 
 			// Check if post-processing is enabled
@@ -79,7 +84,7 @@ export class VoiceCommand {
 				try {
 					// Structure the text using chat completions
 					const structuredText = await client.structureText(
-						result.text,
+						formattedText,
 						this.settings.chatModel,
 						this.settings.postProcessingPrompt
 					);
@@ -89,7 +94,7 @@ export class VoiceCommand {
 
 					// Create both raw and structured files
 					await this.createTranscriptionFiles(
-						result.text,
+						formattedText,
 						structuredText
 					);
 
@@ -107,7 +112,7 @@ export class VoiceCommand {
 					notice.hide();
 
 					// Insert raw text at cursor
-					editor.replaceSelection(result.text);
+					editor.replaceSelection(formattedText);
 
 					// Handle error (will show user-friendly message)
 					ErrorHandler.handle(postProcessingError);
@@ -117,7 +122,7 @@ export class VoiceCommand {
 				notice.hide();
 
 				// Insert transcribed text at cursor position
-				editor.replaceSelection(result.text);
+				editor.replaceSelection(formattedText);
 
 				// Show success notice
 				new Notice('✓ Transcription complete!', 3000);
@@ -166,5 +171,28 @@ export class VoiceCommand {
 		await this.app.vault.create(structuredPath, structuredContent);
 
 		return { rawPath, structuredPath };
+	}
+
+	/**
+	 * Format transcription segments with speaker labels
+	 * @param segments Array of transcription segments with speaker information
+	 * @returns Formatted text with speaker labels
+	 */
+	private formatWithSpeakers(segments: Array<{text: string; speaker?: string}>): string {
+		let currentSpeaker: string | undefined = undefined;
+		let formatted = '';
+
+		for (const segment of segments) {
+			if (segment.speaker && segment.speaker !== currentSpeaker) {
+				// Speaker changed
+				currentSpeaker = segment.speaker;
+				// Convert "SPEAKER_00" to "Speaker 1"
+				const speakerNum = parseInt(segment.speaker.split('_')[1]) + 1;
+				formatted += `\n\n**Speaker ${speakerNum}:** `;
+			}
+			formatted += segment.text.trim() + ' ';
+		}
+
+		return formatted.trim();
 	}
 }

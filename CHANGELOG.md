@@ -5,6 +5,53 @@ All notable changes to Voice MD will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2025-10-19
+
+### Added
+- 🚀 **Auto-start recording option** - Automatically start recording when modal opens for faster workflow
+- New setting to toggle auto-start behavior
+
+### Changed
+- Improved user workflow efficiency with optional auto-start feature
+
+## [1.1.2] - 2025-10-19
+
+### Changed
+- 🎨 **Improved mobile toolbar icon** - Better visual appearance on mobile devices
+- Updated ribbon icon for better aesthetics
+
+## [1.1.1] - 2025-10-19
+
+### Changed
+- 🎨 **Updated ribbon icon** - Enhanced visual appearance in the sidebar
+
+### Documentation
+- Added comprehensive README.md with feature documentation, usage guides, and troubleshooting
+
+## [1.1.0] - 2025-10-19
+
+### Added
+- 👥 **Meeting Mode** - Automatic speaker identification for multi-speaker recordings
+  - Distinguishes between different speakers
+  - Labels transcripts as "Speaker 1:", "Speaker 2:", etc.
+  - Perfect for meetings, interviews, podcasts, and group discussions
+  - Uses `gpt-4o-transcribe-diarize` model
+  - Works best with recordings longer than 30 seconds
+- 📝 **Smart Post-Processing (Optional)** - GPT-powered formatting to transform raw transcriptions into structured markdown
+  - Creates two files: raw transcription + formatted version
+  - Automatic heading hierarchy, bullet points, and paragraph breaks
+  - Preserves speaker labels from meeting mode
+  - Configurable GPT model selection (`gpt-4o-mini`, `gpt-4o`, etc.)
+  - Custom formatting prompts for specialized needs
+  - Organized file output in `Voice Transcriptions/` folder
+
+### Technical
+- Integrated GPT-4o audio transcription with diarization support
+- Added chat completion API for post-processing
+- Enhanced settings interface with meeting mode and post-processing options
+- Implemented dual-file output system (raw + formatted)
+- Added timestamped file naming convention
+
 ## [1.0.1] - 2024-10-19
 
 ### Added
@@ -27,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - 🎤 Voice recording with real-time microphone access
-- 🤖 OpenAI Whisper API integration for accurate transcription
+- 🤖 OpenAI Audio Transcription API integration (gpt-4o-transcribe) for accurate transcription
 - ⚡ Automatic text insertion at cursor position
 - ⚙️ Configurable settings (API key, max duration, language)
 - 🎨 Recording modal with timer and visual feedback
@@ -42,5 +89,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenAI SDK v4.20.0 integration
 - Desktop-only initial release (changed in 1.0.1)
 
+[1.1.3]: https://github.com/DenizOkcu/voice-md/releases/tag/1.1.3
+[1.1.2]: https://github.com/DenizOkcu/voice-md/releases/tag/1.1.2
+[1.1.1]: https://github.com/DenizOkcu/voice-md/releases/tag/1.1.1
+[1.1.0]: https://github.com/DenizOkcu/voice-md/releases/tag/1.1.0
 [1.0.1]: https://github.com/DenizOkcu/voice-md/releases/tag/1.0.1
 [1.0.0]: https://github.com/DenizOkcu/voice-md/releases/tag/1.0.0

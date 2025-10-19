@@ -4,7 +4,6 @@ import { VoiceMDSettings } from './src/types';
 
 const DEFAULT_SETTINGS: VoiceMDSettings = {
 	openaiApiKey: '',
-	whisperModel: 'whisper-1',
 	chatModel: 'gpt-4o-mini',
 	enablePostProcessing: false,
 	postProcessingPrompt: undefined,

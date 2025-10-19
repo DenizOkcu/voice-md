@@ -3,29 +3,29 @@ import { TranscriptionOptions, TranscriptionResult } from '../types';
 import { ErrorHandler } from '../utils/error-handler';
 
 /**
- * OpenAIClient handles communication with the OpenAI Whisper API
+ * OpenAIClient handles communication with the OpenAI Audio Transcription API
  */
 export class OpenAIClient {
 	private client: OpenAI;
-	private model: string;
 
-	constructor(apiKey: string, model: string = 'whisper-1') {
+	constructor(apiKey: string) {
 		this.client = new OpenAI({
 			apiKey: apiKey,
 			dangerouslyAllowBrowser: true // Required for browser usage in Obsidian
 		});
-		this.model = model;
 	}
 
 	/**
-	 * Transcribe an audio blob using OpenAI Whisper API
+	 * Transcribe an audio blob using OpenAI Audio Transcription API
 	 * @param audioBlob The recorded audio blob
 	 * @param options Optional transcription parameters
+	 * @param enableMeetingMode Enable speaker diarization (uses gpt-4o-transcribe-diarize)
 	 * @returns Transcription result with text and metadata
 	 */
 	async transcribe(
 		audioBlob: Blob,
-		options?: TranscriptionOptions
+		options?: TranscriptionOptions,
+		enableMeetingMode?: boolean
 	): Promise<TranscriptionResult> {
 		try {
 			// Convert Blob to File (required by OpenAI SDK)
@@ -33,20 +33,34 @@ export class OpenAIClient {
 				type: audioBlob.type
 			});
 
-			// Call Whisper API
-			const response = await this.client.audio.transcriptions.create({
+			// Determine model based on meeting mode
+			// gpt-4o-transcribe-diarize: Supports speaker diarization
+			// gpt-4o-mini-transcribe: Fast, cost-effective standard transcription
+			const model = enableMeetingMode ? 'gpt-4o-transcribe-diarize' : 'gpt-4o-mini-transcribe';
+			const responseFormat = 'json'; // Both models use json format
+
+			// Build transcription parameters
+			const transcriptionParams: any = {
 				file: audioFile,
-				model: this.model,
+				model: model,
 				language: options?.language,
 				prompt: options?.prompt,
-				response_format: 'verbose_json' // Get additional metadata
-			});
+				response_format: responseFormat,
+			};
+
+			// Add timestamp granularities for segment-level data (required for diarization)
+			if (enableMeetingMode) {
+				transcriptionParams.timestamp_granularities = ['segment'];
+			}
+
+			const response = await this.client.audio.transcriptions.create(transcriptionParams);
 
 			// Parse response
 			return {
 				text: response.text,
 				language: (response as any).language,
-				duration: (response as any).duration
+				duration: (response as any).duration,
+				segments: enableMeetingMode ? (response as any).segments : undefined
 			};
 
 		} catch (error) {
@@ -71,6 +85,7 @@ export class OpenAIClient {
 			const systemPrompt = customPrompt ||
 				"You are a helpful assistant that formats voice transcriptions into well-structured markdown. " +
 				"Use appropriate headings (##, ###), bullet points, numbered lists, and paragraphs. " +
+				"IMPORTANT: If the text contains speaker labels (e.g., **Speaker 1:**), preserve them exactly. " +
 				"Preserve all content from the original transcription while improving readability.";
 
 			const completion = await this.client.chat.completions.create({
@@ -107,7 +122,7 @@ export class OpenAIClient {
 			const sampleBlob = this.createSilentAudioBlob();
 			await this.transcribe(sampleBlob);
 			return true;
-		} catch (error) {
+		} catch (_error) {
 			return false;
 		}
 	}

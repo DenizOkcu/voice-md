@@ -4,7 +4,6 @@
 
 export interface VoiceMDSettings {
 	openaiApiKey: string;
-	whisperModel: 'whisper-1';
 	chatModel: string;
 	enablePostProcessing: boolean;
 	postProcessingPrompt?: string;
@@ -29,6 +28,12 @@ export interface TranscriptionResult {
 	text: string;
 	language?: string;
 	duration?: number;
+	segments?: Array<{
+		text: string;
+		start: number;
+		end: number;
+		speaker?: string;
+	}>;
 }
 
 export type VoiceMDError =

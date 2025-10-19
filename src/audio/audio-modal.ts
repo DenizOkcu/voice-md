@@ -13,14 +13,15 @@ export class RecordingModal extends Modal {
 	private stopBtn: HTMLButtonElement;
 	private cancelBtn: HTMLButtonElement;
 	private timerInterval: number | null = null;
-	private onRecordingComplete: (blob: Blob) => void;
+	private meetingModeEnabled: boolean = false;
+	private onRecordingComplete: (blob: Blob, enableMeetingMode: boolean) => void;
 	private maxDuration: number;
 	private autoStart: boolean;
 
 	constructor(
 		app: App,
 		maxDuration: number,
-		onRecordingComplete: (blob: Blob) => void,
+		onRecordingComplete: (blob: Blob, enableMeetingMode: boolean) => void,
 		autoStart: boolean
 	) {
 		super(app);
@@ -46,6 +47,18 @@ export class RecordingModal extends Modal {
 		// Timer display
 		this.timerEl = contentEl.createDiv({ cls: 'voice-md-timer' });
 		this.timerEl.setText('00:00');
+
+		// Meeting mode checkbox
+		const checkboxContainer = contentEl.createDiv({ cls: 'voice-md-meeting-mode' });
+		const label = checkboxContainer.createEl('label');
+		const checkbox = label.createEl('input', { type: 'checkbox' });
+		checkbox.checked = false; // Default: unchecked
+		label.appendText(' Enable Meeting Mode (Speaker Identification)');
+
+		// Wire change handler
+		checkbox.addEventListener('change', () => {
+			this.meetingModeEnabled = checkbox.checked;
+		});
 
 		// Max duration info
 		const maxDurationText = this.formatTime(this.maxDuration);
@@ -139,7 +152,7 @@ export class RecordingModal extends Modal {
 			}
 
 			// Call completion handler
-			this.onRecordingComplete(blob);
+			this.onRecordingComplete(blob, this.meetingModeEnabled);
 
 			// Close modal
 			this.close();
