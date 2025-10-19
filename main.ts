@@ -19,7 +19,7 @@ export default class VoiceMDPlugin extends Plugin {
 		await this.loadSettings();
 
 		// Add ribbon icon for quick access
-		this.addRibbonIcon('microphone', 'Start Voice Recording', () => {
+		this.addRibbonIcon('voicemail', 'Start Voice Recording', () => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				const editor = view.editor;
