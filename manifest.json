@@ -1,7 +1,7 @@
 {
   "id": "voice-md",
   "name": "Voice MD",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "minAppVersion": "0.15.0",
   "description": "Record audio and transcribe it to markdown using OpenAI Audio Transcription API.",
   "author": "Deniz Okcu",
