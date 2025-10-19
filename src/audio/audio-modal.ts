@@ -15,16 +15,19 @@ export class RecordingModal extends Modal {
 	private timerInterval: number | null = null;
 	private onRecordingComplete: (blob: Blob) => void;
 	private maxDuration: number;
+	private autoStart: boolean;
 
 	constructor(
 		app: App,
 		maxDuration: number,
-		onRecordingComplete: (blob: Blob) => void
+		onRecordingComplete: (blob: Blob) => void,
+		autoStart: boolean
 	) {
 		super(app);
 		this.recorder = new AudioRecorder();
 		this.onRecordingComplete = onRecordingComplete;
 		this.maxDuration = maxDuration;
+		this.autoStart = autoStart;
 	}
 
 	onOpen() {
@@ -71,6 +74,11 @@ export class RecordingModal extends Modal {
 			text: 'Cancel'
 		});
 		this.cancelBtn.addEventListener('click', () => this.close());
+
+		// Auto-start recording if enabled
+		if (this.autoStart) {
+			this.startRecording();
+		}
 	}
 
 	onClose() {

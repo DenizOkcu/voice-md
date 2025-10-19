@@ -9,7 +9,8 @@ const DEFAULT_SETTINGS: VoiceMDSettings = {
 	enablePostProcessing: false,
 	postProcessingPrompt: undefined,
 	language: undefined,
-	maxRecordingDuration: 300
+	maxRecordingDuration: 300,
+	autoStartRecording: false
 }
 
 export default class VoiceMDPlugin extends Plugin {
@@ -94,6 +95,16 @@ class VoiceMDSettingTab extends PluginSettingTab {
 						this.plugin.settings.maxRecordingDuration = numValue;
 						await this.plugin.saveSettings();
 					}
+				}));
+
+		new Setting(containerEl)
+			.setName('Auto-Start Recording')
+			.setDesc('Automatically start recording when opening the voice recording modal')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.autoStartRecording)
+				.onChange(async (value) => {
+					this.plugin.settings.autoStartRecording = value;
+					await this.plugin.saveSettings();
 				}));
 
 		new Setting(containerEl)

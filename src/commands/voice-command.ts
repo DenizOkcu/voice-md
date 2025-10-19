@@ -37,7 +37,8 @@ export class VoiceCommand {
 			this.settings.maxRecordingDuration,
 			async (audioBlob) => {
 				await this.handleRecording(audioBlob, editor);
-			}
+			},
+			this.settings.autoStartRecording
 		);
 
 		modal.open();

@@ -10,6 +10,7 @@ export interface VoiceMDSettings {
 	postProcessingPrompt?: string;
 	language?: string;
 	maxRecordingDuration: number;
+	autoStartRecording: boolean;
 }
 
 export interface RecordingState {
