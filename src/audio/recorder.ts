@@ -147,14 +147,17 @@ export class AudioRecorder {
 
 	/**
 	 * Get the best supported MIME type for audio recording
+	 * Prioritizes formats compatible with both desktop and mobile
 	 * @returns A supported MIME type string
 	 */
 	private getSupportedMimeType(): string {
 		const types = [
-			'audio/webm;codecs=opus',
-			'audio/webm',
-			'audio/ogg;codecs=opus',
-			'audio/mp4'
+			'audio/webm;codecs=opus',  // Desktop Chrome/Firefox
+			'audio/webm',               // Desktop fallback
+			'audio/mp4',                // iOS Safari
+			'audio/mp4;codecs=mp4a.40.2', // iOS Safari with codec
+			'audio/ogg;codecs=opus',    // Firefox
+			'audio/wav'                 // Universal fallback
 		];
 
 		for (const type of types) {
@@ -163,7 +166,7 @@ export class AudioRecorder {
 			}
 		}
 
-		// Fallback to default
-		return 'audio/webm';
+		// Fallback to default (let browser choose)
+		return '';
 	}
 }
