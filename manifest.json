@@ -1,11 +1,10 @@
 {
-  "id": "voice-md",
-  "name": "Voice MD",
-  "version": "1.2.1",
-  "minAppVersion": "0.15.0",
-  "description": "Record audio and transcribe it to markdown using OpenAI Audio Transcription API.",
-  "author": "Deniz Okcu",
-  "authorUrl": "https://github.com/DenizOkcu",
-  "fundingUrl": "https://github.com/sponsors/DenizOkcu",
-  "isDesktopOnly": false
+	"id": "voice-md",
+	"name": "Voice MD",
+	"version": "1.2.1",
+	"minAppVersion": "0.15.0",
+	"description": "Record audio and transcribe it to markdown using OpenAI Audio Transcription API.",
+	"author": "Deniz Okcu",
+	"authorUrl": "https://github.com/DenizOkcu",
+	"isDesktopOnly": false
 }

@@ -168,6 +168,6 @@ Requires OpenAI API key (pay-per-use):
 
 ## Contributing
 
-[Issues](https://github.com/DenizOkcu/voice-md/issues) • [Discussions](https://github.com/DenizOkcu/voice-md/discussions) • [Sponsor](https://github.com/sponsors/DenizOkcu)
+[Issues](https://github.com/DenizOkcu/voice-md/issues) • [Discussions](https://github.com/DenizOkcu/voice-md/discussions)
 
 MIT License - see [LICENSE](LICENSE)
