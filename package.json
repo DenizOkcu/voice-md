@@ -1,43 +1,43 @@
 {
-	"name": "obsidian-voice-md",
-	"version": "1.0.0",
-	"description": "Record audio and transcribe it to markdown using OpenAI Whisper API",
-	"main": "main.js",
-	"scripts": {
-		"dev": "node esbuild.config.mjs",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json",
-    	"update-version": "node update-version.mjs"
-	},
-	"keywords": [
-		"obsidian",
-		"plugin",
-		"voice",
-		"transcription",
-		"whisper",
-		"openai"
-	],
-	"author": "Deniz Okcu",
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:DenizOkcu/voice-md.git"
-	},
-	"homepage": "https://github.com/DenizOkcu/voice-md#readme",
-	"bugs": {
-		"url": "https://github.com/DenizOkcu/voice-md/issues"
-	},
-	"dependencies": {
-		"openai": "^4.20.0"
-	},
-	"devDependencies": {
-		"@types/node": "^16.11.6",
-		"@typescript-eslint/eslint-plugin": "5.29.0",
-		"@typescript-eslint/parser": "5.29.0",
-		"builtin-modules": "3.3.0",
-		"esbuild": "0.17.3",
-		"obsidian": "latest",
-		"tslib": "2.4.0",
-		"typescript": "4.7.4"
-	}
+  "name": "obsidian-voice-md",
+  "version": "1.0.1",
+  "description": "Record audio and transcribe it to markdown using OpenAI Whisper API",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "version": "node version-bump.mjs && git add manifest.json versions.json",
+    "update-version": "node update-version.mjs"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "voice",
+    "transcription",
+    "whisper",
+    "openai"
+  ],
+  "author": "Deniz Okcu",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:DenizOkcu/voice-md.git"
+  },
+  "homepage": "https://github.com/DenizOkcu/voice-md#readme",
+  "bugs": {
+    "url": "https://github.com/DenizOkcu/voice-md/issues"
+  },
+  "dependencies": {
+    "openai": "^4.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.6",
+    "@typescript-eslint/eslint-plugin": "5.29.0",
+    "@typescript-eslint/parser": "5.29.0",
+    "builtin-modules": "3.3.0",
+    "esbuild": "0.17.3",
+    "obsidian": "latest",
+    "tslib": "2.4.0",
+    "typescript": "4.7.4"
+  }
 }
