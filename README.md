@@ -1,94 +1,188 @@
-# Obsidian Sample Plugin
+# Voice MD
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+**Transform your voice into beautifully formatted markdown notes.** Record, transcribe, and optionally structure your thoughts—all without leaving Obsidian.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+Voice MD leverages OpenAI's Whisper API to turn your spoken words into text, with an optional GPT-powered post-processing step that transforms raw transcriptions into well-organized, structured markdown.
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+## Quick Start
 
-## First time developing plugins?
+1. **Install the plugin**
+   - Via BRAT: Add `DenizOkcu/voice-md` in the BRAT plugin settings
+   - Or manually: Download and extract to `.obsidian/plugins/voice-md/`
 
-Quick starting guide for new plugin devs:
+2. **Add your OpenAI API key**
+   - Go to Settings → Voice MD
+   - Paste your API key from [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+3. **Start recording**
+   - Click the microphone icon in the ribbon, or
+   - Use the command palette: "Start Voice Recording"
+   - Click again to stop
 
-## Releasing new releases
+That's it! Your transcribed text appears right in your note.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Features
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+### Core Functionality
+- **One-click recording** via ribbon icon or command palette
+- **Accurate transcription** powered by OpenAI Whisper
+- **Inline insertion** at your cursor position
+- **Auto-language detection** or force specific languages
+- **Configurable duration** limits (default: 5 minutes)
 
-## Adding your plugin to the community plugin list
+### Smart Post-Processing (Optional)
+Enable GPT-powered formatting to transform raw transcriptions into structured markdown:
+- Creates **two files**: raw transcription + formatted version
+- Automatic **heading hierarchy**, **bullet points**, and **paragraph breaks**
+- Choose your preferred GPT model (gpt-4o-mini, gpt-4o, etc.)
+- **Custom prompts** for specialized formatting needs
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+Perfect for:
+- Meeting notes → structured summaries
+- Voice memos → actionable tasks
+- Stream of consciousness → organized thoughts
+- Interviews → formatted Q&A
 
-## How to use
+## Installation
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+### Method 1: BRAT (Recommended)
+1. Install the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat)
+2. Open BRAT settings
+3. Click "Add Beta plugin"
+4. Enter: `DenizOkcu/voice-md`
+5. Enable Voice MD in Settings → Community plugins
 
-## Manually installing the plugin
+### Method 2: Manual Installation
+1. Download the latest release from [GitHub Releases](https://github.com/DenizOkcu/voice-md/releases)
+2. Extract `main.js`, `manifest.json`, and `styles.css` (if present)
+3. Copy to `<your-vault>/.obsidian/plugins/voice-md/`
+4. Restart Obsidian
+5. Enable Voice MD in Settings → Community plugins
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+## Configuration
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint ./src/`
+Access settings via Settings → Voice MD:
 
-## Funding URL
+### Required Settings
+- **OpenAI API Key**: Your API key from OpenAI (required for transcription)
 
-You can include funding URLs where people who use your plugin can financially support it.
+### Optional Settings
+- **Max Recording Duration**: Set a limit in seconds (default: 300s / 5 minutes)
+- **Language**: Force a specific language code (`en`, `es`, `fr`, etc.) or leave blank for auto-detection
+- **Enable Post-Processing**: Toggle GPT-powered markdown formatting
+- **Chat Model**: Choose the GPT model for formatting (gpt-4o-mini is faster and cheaper)
+- **Custom Formatting Prompt**: Override the default structuring instructions
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+## Usage
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+### Basic Workflow
+1. Open any note in Obsidian
+2. Place your cursor where you want the transcription
+3. Click the microphone icon or run "Start Voice Recording"
+4. Speak naturally
+5. Click the microphone again to stop
+6. Wait a moment for transcription
+7. Your text appears at the cursor position
 
-If you have multiple URLs, you can also do:
+### With Post-Processing
+When post-processing is enabled:
+1. Follow the basic workflow above
+2. Two files are created:
+   - `YYYY-MM-DD-HHmmss-raw.md` - Original transcription
+   - `YYYY-MM-DD-HHmmss-structured.md` - Formatted version
+3. Both files open automatically for review
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+### Tips for Best Results
+- **Speak clearly** and at a moderate pace
+- **Pause briefly** between major points for better sentence detection
+- Use **natural language** - no need to say "period" or "comma"
+- For post-processing: **mention structure** (e.g., "first point", "next section") to help GPT understand your intent
+- **Review and edit** - AI transcription is powerful but not perfect
 
-## API Documentation
+## Pricing
 
-See https://github.com/obsidianmd/obsidian-api
+Voice MD uses OpenAI's APIs, which incur costs based on usage:
+
+- **Whisper API**: ~$0.006 per minute of audio
+- **GPT Post-Processing** (optional):
+  - gpt-4o-mini: ~$0.0001-0.0003 per transcription
+  - gpt-4o: ~$0.002-0.005 per transcription
+
+Example: A 5-minute recording with post-processing typically costs less than $0.04.
+
+[Check current OpenAI pricing](https://openai.com/api/pricing/)
+
+## Privacy & Security
+
+**Privacy-first design:** Voice MD is built with your privacy as a top priority.
+
+### What Gets Sent
+- **Audio for transcription** → OpenAI Whisper API (only when you record)
+- **Transcribed text for formatting** → OpenAI GPT API (only if post-processing is enabled)
+
+That's it. No other data leaves your device.
+
+### What Stays Local
+- **Your API key** - Stored only in Obsidian's local data folder
+- **Your notes** - Never uploaded or shared
+- **Your settings** - Remain on your device
+- **Your recordings** - Processed in-memory, not saved unless you choose to
+
+### What We Don't Do
+- ❌ **No tracking** - Zero usage analytics or telemetry
+- ❌ **No third-party services** - Just you, Obsidian, and OpenAI
+- ❌ **No data collection** - We don't see or store anything
+- ❌ **No accounts** - No sign-ups, no databases, no profiles
+- ❌ **No remote servers** - Beyond OpenAI's API for transcription
+
+**In short:** You control your data. Audio is sent to OpenAI only for transcription/formatting, then discarded. Everything else stays on your machine. See [OpenAI's Privacy Policy](https://openai.com/policies/privacy-policy) for how they handle API requests.
+
+## Troubleshooting
+
+### "No API key configured"
+Go to Settings → Voice MD and add your OpenAI API key.
+
+### Recording doesn't start
+Check that your browser/system has granted microphone permissions to Obsidian.
+
+### Transcription fails
+- Verify your API key is correct and active
+- Check your OpenAI account has available credits
+- Ensure you have a stable internet connection
+
+### Post-processing not working
+- Confirm post-processing is enabled in settings
+- Verify your API key has access to the selected GPT model
+- Check the Obsidian console (Cmd/Ctrl+Shift+I) for error messages
+
+## Roadmap
+
+Planned features:
+- Local transcription options (Whisper.cpp integration)
+- Custom keyboard shortcuts
+- Audio file import and transcription
+- Speaker diarization support
+- Template support for structured outputs
+
+Have ideas? [Open an issue](https://github.com/DenizOkcu/voice-md/issues) or contribute!
+
+## Support
+
+- **Issues & Bugs**: [GitHub Issues](https://github.com/DenizOkcu/voice-md/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/DenizOkcu/voice-md/discussions)
+- **Support Development**: [GitHub Sponsors](https://github.com/sponsors/DenizOkcu)
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Acknowledgments
+
+Built with:
+- [OpenAI Whisper API](https://openai.com/research/whisper) - Speech recognition
+- [OpenAI GPT](https://openai.com/gpt-4) - Intelligent formatting
+- [Obsidian API](https://docs.obsidian.md) - Plugin framework
+
+---
+
+**Enjoy effortless note-taking!** If Voice MD saves you time, consider [sponsoring the project](https://github.com/sponsors/DenizOkcu).
