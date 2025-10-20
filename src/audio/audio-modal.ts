@@ -77,10 +77,9 @@ export class RecordingModal extends Modal {
 		this.startBtn.addEventListener('click', () => this.startRecording());
 
 		this.stopBtn = this.controlsEl.createEl('button', {
-			cls: 'mod-warning',
+			cls: 'mod-warning voice-md-hidden',
 			text: 'Stop Recording'
 		});
-		this.stopBtn.style.display = 'none';
 		this.stopBtn.addEventListener('click', () => this.stopRecording());
 
 		this.cancelBtn = this.controlsEl.createEl('button', {
@@ -115,8 +114,9 @@ export class RecordingModal extends Modal {
 			// Update UI
 			this.statusEl.setText('Recording...');
 			this.statusEl.addClass('recording');
-			this.startBtn.style.display = 'none';
-			this.stopBtn.style.display = 'inline-block';
+			this.startBtn.addClass('voice-md-hidden');
+			this.stopBtn.removeClass('voice-md-hidden');
+			this.stopBtn.addClass('voice-md-visible');
 			this.cancelBtn.disabled = true;
 
 			// Start timer

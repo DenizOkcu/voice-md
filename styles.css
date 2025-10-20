@@ -83,3 +83,12 @@
 .voice-md-meeting-mode label:hover {
 	color: var(--text-muted);
 }
+
+/* Button visibility control */
+.voice-md-controls button.voice-md-hidden {
+	display: none;
+}
+
+.voice-md-controls button.voice-md-visible {
+	display: inline-block;
+}

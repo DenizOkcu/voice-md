@@ -36,6 +36,22 @@ export interface TranscriptionResult {
 	}>;
 }
 
+/**
+ * Extended OpenAI Transcription Response
+ * OpenAI's API returns additional fields beyond the base Transcription type
+ */
+export interface ExtendedTranscriptionResponse {
+	text: string;
+	language?: string;
+	duration?: number;
+	segments?: Array<{
+		text: string;
+		start: number;
+		end: number;
+		speaker?: string;
+	}>;
+}
+
 export type VoiceMDError =
 	| { type: 'NO_MICROPHONE'; message: string }
 	| { type: 'PERMISSION_DENIED'; message: string }

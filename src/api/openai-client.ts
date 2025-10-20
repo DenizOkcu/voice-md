@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { TranscriptionOptions, TranscriptionResult } from '../types';
+import { TranscriptionOptions, TranscriptionResult, ExtendedTranscriptionResponse } from '../types';
 import { ErrorHandler } from '../utils/error-handler';
 
 /**
@@ -40,7 +40,11 @@ export class OpenAIClient {
 			const responseFormat = enableMeetingMode ? 'diarized_json' : 'json';
 
 			// Build transcription parameters
-			const transcriptionParams: any = {
+			// Note: Using a flexible object type because OpenAI SDK's type doesn't include
+			// all parameters like timestamp_granularities for diarization
+			const transcriptionParams: OpenAI.Audio.Transcriptions.TranscriptionCreateParams & {
+				timestamp_granularities?: string[];
+			} = {
 				file: audioFile,
 				model: model,
 				language: options?.language,
@@ -55,12 +59,15 @@ export class OpenAIClient {
 
 			const response = await this.client.audio.transcriptions.create(transcriptionParams);
 
-			// Parse response
+			// Parse response - OpenAI API returns additional fields beyond the base type
+			// Cast to our extended interface that includes language, duration, and segments
+			const extendedResponse = response as unknown as ExtendedTranscriptionResponse;
+
 			return {
-				text: response.text,
-				language: (response as any).language,
-				duration: (response as any).duration,
-				segments: enableMeetingMode ? (response as any).segments : undefined
+				text: extendedResponse.text,
+				language: extendedResponse.language,
+				duration: extendedResponse.duration,
+				segments: enableMeetingMode ? extendedResponse.segments : undefined
 			};
 
 		} catch (error) {
