@@ -1,5 +1,6 @@
-import { App, Modal } from 'obsidian';
+import { App, Modal, Plugin } from 'obsidian';
 import { AudioRecorder } from './recorder';
+import { VoiceMDSettings } from '../types';
 
 /**
  * RecordingModal provides UI for audio recording with visual feedback
@@ -14,21 +15,29 @@ export class RecordingModal extends Modal {
 	private cancelBtn: HTMLButtonElement;
 	private timerInterval: number | null = null;
 	private meetingModeEnabled: boolean = false;
-	private onRecordingComplete: (blob: Blob, enableMeetingMode: boolean) => void;
+	private postProcessingEnabled: boolean = false;
+	private onRecordingComplete: (blob: Blob, enableMeetingMode: boolean, enablePostProcessing: boolean) => void;
 	private maxDuration: number;
 	private autoStart: boolean;
+	private plugin: Plugin;
+	private settings: VoiceMDSettings;
 
 	constructor(
 		app: App,
+		plugin: Plugin,
+		settings: VoiceMDSettings,
 		maxDuration: number,
-		onRecordingComplete: (blob: Blob, enableMeetingMode: boolean) => void,
+		onRecordingComplete: (blob: Blob, enableMeetingMode: boolean, enablePostProcessing: boolean) => void,
 		autoStart: boolean
 	) {
 		super(app);
 		this.recorder = new AudioRecorder();
+		this.plugin = plugin;
+		this.settings = settings;
 		this.onRecordingComplete = onRecordingComplete;
 		this.maxDuration = maxDuration;
 		this.autoStart = autoStart;
+		this.postProcessingEnabled = settings.enablePostProcessing;
 	}
 
 	onOpen() {
@@ -49,15 +58,30 @@ export class RecordingModal extends Modal {
 		this.timerEl.setText('00:00');
 
 		// Meeting mode checkbox
-		const checkboxContainer = contentEl.createDiv({ cls: 'voice-md-meeting-mode' });
-		const label = checkboxContainer.createEl('label');
-		const checkbox = label.createEl('input', { type: 'checkbox' });
-		checkbox.checked = false; // Default: unchecked
-		label.appendText(' Enable Meeting Mode (Speaker Identification)');
+		const meetingModeContainer = contentEl.createDiv({ cls: 'voice-md-meeting-mode' });
+		const meetingModeLabel = meetingModeContainer.createEl('label');
+		const meetingModeCheckbox = meetingModeLabel.createEl('input', { type: 'checkbox' });
+		meetingModeCheckbox.checked = false; // Default: unchecked
+		meetingModeLabel.appendText(' Enable Meeting Mode (Speaker Identification)');
 
 		// Wire change handler
-		checkbox.addEventListener('change', () => {
-			this.meetingModeEnabled = checkbox.checked;
+		meetingModeCheckbox.addEventListener('change', () => {
+			this.meetingModeEnabled = meetingModeCheckbox.checked;
+		});
+
+		// Post-processing checkbox
+		const postProcessingContainer = contentEl.createDiv({ cls: 'voice-md-meeting-mode' });
+		const postProcessingLabel = postProcessingContainer.createEl('label');
+		const postProcessingCheckbox = postProcessingLabel.createEl('input', { type: 'checkbox' });
+		postProcessingCheckbox.checked = this.postProcessingEnabled; // Default from global setting
+		postProcessingLabel.appendText(' Enable Post-Processing (Smart Formatting)');
+
+		// Wire change handler - updates both instance state and global settings
+		postProcessingCheckbox.addEventListener('change', async () => {
+			this.postProcessingEnabled = postProcessingCheckbox.checked;
+			// Update global setting
+			this.settings.enablePostProcessing = postProcessingCheckbox.checked;
+			await this.plugin.saveData(this.settings);
 		});
 
 		// Max duration info
@@ -152,7 +176,7 @@ export class RecordingModal extends Modal {
 			}
 
 			// Call completion handler
-			this.onRecordingComplete(blob, this.meetingModeEnabled);
+			this.onRecordingComplete(blob, this.meetingModeEnabled, this.postProcessingEnabled);
 
 			// Close modal
 			this.close();

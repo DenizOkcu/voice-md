@@ -23,7 +23,7 @@ export default class VoiceMDPlugin extends Plugin {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				const editor = view.editor;
-				const voiceCommand = new VoiceCommand(this.app, this.settings);
+				const voiceCommand = new VoiceCommand(this.app, this, this.settings);
 				voiceCommand.execute(editor);
 			}
 		});
@@ -34,7 +34,7 @@ export default class VoiceMDPlugin extends Plugin {
 			name: 'Start Voice Recording',
 			icon: 'voicemail',
 			editorCallback: (editor: Editor) => {
-				const voiceCommand = new VoiceCommand(this.app, this.settings);
+				const voiceCommand = new VoiceCommand(this.app, this, this.settings);
 				voiceCommand.execute(editor);
 			}
 		});

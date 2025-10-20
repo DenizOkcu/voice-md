@@ -1,4 +1,4 @@
-import { App, Editor, Notice, moment } from 'obsidian';
+import { App, Editor, Notice, moment, Plugin } from 'obsidian';
 import { RecordingModal } from '../audio/audio-modal';
 import { OpenAIClient } from '../api/openai-client';
 import { ErrorHandler } from '../utils/error-handler';
@@ -10,10 +10,12 @@ import { VoiceMDSettings } from '../types';
  */
 export class VoiceCommand {
 	private app: App;
+	private plugin: Plugin;
 	private settings: VoiceMDSettings;
 
-	constructor(app: App, settings: VoiceMDSettings) {
+	constructor(app: App, plugin: Plugin, settings: VoiceMDSettings) {
 		this.app = app;
+		this.plugin = plugin;
 		this.settings = settings;
 	}
 
@@ -34,9 +36,11 @@ export class VoiceCommand {
 		// Open recording modal
 		const modal = new RecordingModal(
 			this.app,
+			this.plugin,
+			this.settings,
 			this.settings.maxRecordingDuration,
-			async (audioBlob, meetingMode) => {
-				await this.handleRecording(audioBlob, editor, meetingMode);
+			async (audioBlob, meetingMode, enablePostProcessing) => {
+				await this.handleRecording(audioBlob, editor, meetingMode, enablePostProcessing);
 			},
 			this.settings.autoStartRecording
 		);
@@ -47,7 +51,7 @@ export class VoiceCommand {
 	/**
 	 * Handle the recorded audio blob: transcribe and insert into editor
 	 */
-	private async handleRecording(audioBlob: Blob, editor: Editor, meetingMode: boolean): Promise<void> {
+	private async handleRecording(audioBlob: Blob, editor: Editor, meetingMode: boolean, enablePostProcessing: boolean): Promise<void> {
 		// Show processing notice
 		let notice = new Notice('Transcribing audio...', 0); // 0 = don't auto-dismiss
 
@@ -75,8 +79,8 @@ export class VoiceCommand {
 				formattedText = this.formatWithSpeakers(result.segments);
 			}
 
-			// Check if post-processing is enabled
-			if (this.settings.enablePostProcessing) {
+			// Check if post-processing is enabled (from modal checkbox)
+			if (enablePostProcessing) {
 				// Update notice to show structuring
 				notice.hide();
 				notice = new Notice('Structuring text...', 0);
