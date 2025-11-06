@@ -19,7 +19,7 @@ export default class VoiceMDPlugin extends Plugin {
 		await this.loadSettings();
 
 		// Add ribbon icon for quick access
-		this.addRibbonIcon('voicemail', 'Start Voice Recording', () => {
+		this.addRibbonIcon('voicemail', 'Start voice recording', () => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				const editor = view.editor;
@@ -31,7 +31,7 @@ export default class VoiceMDPlugin extends Plugin {
 		// Add command for voice recording
 		this.addCommand({
 			id: 'start-voice-recording',
-			name: 'Start Voice Recording',
+			name: 'Start voice recording',
 			icon: 'voicemail',
 			editorCallback: (editor: Editor) => {
 				const voiceCommand = new VoiceCommand(this.app, this, this.settings);
@@ -69,10 +69,10 @@ class VoiceMDSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Voice MD Settings'});
+		containerEl.createEl('h2', {text: 'Voice MD settings'});
 
 		new Setting(containerEl)
-			.setName('OpenAI API Key')
+			.setName('OpenAI API key')
 			.setDesc('Enter your OpenAI API key to enable audio transcription. Get one at https://platform.openai.com/api-keys')
 			.addText(text => text
 				.setPlaceholder('sk-...')
@@ -83,7 +83,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Max Recording Duration')
+			.setName('Max recording duration')
 			.setDesc('Maximum recording duration in seconds (default: 300 seconds / 5 minutes)')
 			.addText(text => text
 				.setPlaceholder('300')
@@ -97,7 +97,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Auto-Start Recording')
+			.setName('Auto-start recording')
 			.setDesc('Automatically start recording when opening the voice recording modal')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.autoStartRecording)
@@ -118,7 +118,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Enable Post-Processing')
+			.setName('Enable post-processing')
 			.setDesc('Structure transcriptions into formatted markdown using GPT. Creates two files: raw and structured. This feature makes additional API calls.')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enablePostProcessing)
@@ -132,7 +132,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 		// Show chat model and custom prompt settings only if post-processing is enabled
 		if (this.plugin.settings.enablePostProcessing) {
 			new Setting(containerEl)
-				.setName('Chat Model')
+				.setName('Chat model')
 				.setDesc('OpenAI model for post-processing (e.g., gpt-4o-mini, gpt-4o). Note: Adds cost per transcription.')
 				.addText(text => text
 					.setPlaceholder('gpt-4o-mini')
@@ -143,7 +143,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 					}));
 
 			new Setting(containerEl)
-				.setName('Custom Formatting Prompt')
+				.setName('Custom formatting prompt')
 				.setDesc('Override the default prompt for structuring. Leave blank to use default.')
 				.addTextArea(text => text
 					.setPlaceholder('Leave blank for default prompt')

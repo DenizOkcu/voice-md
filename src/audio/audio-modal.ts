@@ -47,7 +47,7 @@ export class RecordingModal extends Modal {
 		contentEl.empty();
 
 		// Title
-		contentEl.createEl('h2', { text: 'Voice Recording' });
+		contentEl.createEl('h2', { text: 'Voice recording' });
 
 		// Status indicator
 		this.statusEl = contentEl.createDiv({ cls: 'voice-md-status' });
@@ -96,13 +96,13 @@ export class RecordingModal extends Modal {
 
 		this.startBtn = this.controlsEl.createEl('button', {
 			cls: 'mod-cta',
-			text: 'Start Recording'
+			text: 'Start recording'
 		});
 		this.startBtn.addEventListener('click', () => this.startRecording());
 
 		this.stopBtn = this.controlsEl.createEl('button', {
 			cls: 'mod-warning voice-md-hidden',
-			text: 'Stop Recording'
+			text: 'Stop recording'
 		});
 		this.stopBtn.addEventListener('click', () => this.stopRecording());
 
