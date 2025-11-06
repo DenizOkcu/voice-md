@@ -52,10 +52,32 @@ export interface ExtendedTranscriptionResponse {
 	}>;
 }
 
-export type VoiceMDError =
+export type VoiceMDErrorType =
 	| { type: 'NO_MICROPHONE'; message: string }
 	| { type: 'PERMISSION_DENIED'; message: string }
 	| { type: 'API_ERROR'; code: string; message: string }
 	| { type: 'NETWORK_ERROR'; message: string }
 	| { type: 'INVALID_API_KEY'; message: string }
 	| { type: 'POST_PROCESSING_ERROR'; message: string };
+
+/**
+ * Custom Error class for Voice MD plugin errors
+ */
+export class VoiceMDError extends Error {
+	public readonly errorType: VoiceMDErrorType['type'];
+	public readonly code?: string;
+
+	constructor(errorInfo: VoiceMDErrorType) {
+		super(errorInfo.message);
+		this.name = 'VoiceMDError';
+		this.errorType = errorInfo.type;
+		if ('code' in errorInfo) {
+			this.code = errorInfo.code;
+		}
+
+		// Maintains proper stack trace for where our error was thrown (only available on V8)
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, VoiceMDError);
+		}
+	}
+}

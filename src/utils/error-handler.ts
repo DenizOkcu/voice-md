@@ -1,5 +1,5 @@
 import { Notice } from 'obsidian';
-import { VoiceMDError } from '../types';
+import { VoiceMDError, VoiceMDErrorType } from '../types';
 
 /**
  * ErrorHandler provides centralized error handling and user-friendly messages
@@ -13,7 +13,7 @@ export class ErrorHandler {
 
 		let message = 'An unknown error occurred';
 
-		if (this.isVoiceMDError(error)) {
+		if (error instanceof VoiceMDError) {
 			message = this.getErrorMessage(error);
 		} else if (error instanceof Error) {
 			// Handle standard Error objects
@@ -33,7 +33,7 @@ export class ErrorHandler {
 	 * Get a user-friendly error message for VoiceMDError types
 	 */
 	private static getErrorMessage(error: VoiceMDError): string {
-		switch (error.type) {
+		switch (error.errorType) {
 			case 'NO_MICROPHONE':
 				return 'No microphone found. Please connect a microphone and try again.';
 
@@ -58,15 +58,10 @@ export class ErrorHandler {
 	}
 
 	/**
-	 * Type guard to check if an error is a VoiceMDError
+	 * Type guard to check if error has expected API error shape
 	 */
-	private static isVoiceMDError(error: unknown): error is VoiceMDError {
-		return (
-			typeof error === 'object' &&
-			error !== null &&
-			'type' in error &&
-			'message' in error
-		);
+	private static isApiError(error: unknown): error is { status?: number; code?: string; message?: string } {
+		return typeof error === 'object' && error !== null;
 	}
 
 	/**
@@ -74,67 +69,73 @@ export class ErrorHandler {
 	 * @param error The error from OpenAI SDK
 	 * @param isPostProcessing Whether this error is from post-processing (chat) vs transcription
 	 */
-	static fromOpenAIError(error: any, isPostProcessing = false): VoiceMDError {
-		if (error?.status === 401 || error?.status === 403) {
-			return {
+	static fromOpenAIError(error: unknown, isPostProcessing = false): VoiceMDError {
+		let errorInfo: VoiceMDErrorType;
+
+		// Type guard check
+		if (!this.isApiError(error)) {
+			errorInfo = {
+				type: isPostProcessing ? 'POST_PROCESSING_ERROR' : 'API_ERROR',
+				code: 'UNKNOWN',
+				message: String(error)
+			};
+			return new VoiceMDError(errorInfo);
+		}
+
+		if (error.status === 401 || error.status === 403) {
+			errorInfo = {
 				type: 'INVALID_API_KEY',
 				message: 'Invalid or missing API key'
 			};
-		}
-
-		if (error?.status === 429) {
+		} else if (error.status === 429) {
 			if (isPostProcessing) {
-				return {
+				errorInfo = {
 					type: 'POST_PROCESSING_ERROR',
 					message: 'Rate limit exceeded. Please wait a moment and try again.'
 				};
+			} else {
+				errorInfo = {
+					type: 'API_ERROR',
+					code: '429',
+					message: 'Rate limit exceeded. Please wait a moment and try again.'
+				};
 			}
-			return {
-				type: 'API_ERROR',
-				code: '429',
-				message: 'Rate limit exceeded. Please wait a moment and try again.'
-			};
-		}
-
-		if (error?.status === 404 && isPostProcessing) {
-			return {
+		} else if (error.status === 404 && isPostProcessing) {
+			errorInfo = {
 				type: 'POST_PROCESSING_ERROR',
 				message: 'Invalid chat model. Please check your settings.'
 			};
-		}
-
-		if (error?.status >= 500) {
+		} else if (error.status !== undefined && error.status >= 500) {
 			if (isPostProcessing) {
-				return {
+				errorInfo = {
 					type: 'POST_PROCESSING_ERROR',
 					message: 'OpenAI service is temporarily unavailable. Please try again later.'
 				};
+			} else {
+				errorInfo = {
+					type: 'API_ERROR',
+					code: String(error.status),
+					message: 'OpenAI service is temporarily unavailable. Please try again later.'
+				};
 			}
-			return {
-				type: 'API_ERROR',
-				code: String(error.status),
-				message: 'OpenAI service is temporarily unavailable. Please try again later.'
-			};
-		}
-
-		if (error?.code === 'ENOTFOUND' || error?.code === 'ETIMEDOUT') {
-			return {
+		} else if (error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+			errorInfo = {
 				type: 'NETWORK_ERROR',
 				message: 'Unable to reach OpenAI servers. Please check your internet connection.'
 			};
-		}
-
-		if (isPostProcessing) {
-			return {
+		} else if (isPostProcessing) {
+			errorInfo = {
 				type: 'POST_PROCESSING_ERROR',
-				message: error?.message || 'An error occurred while structuring text'
+				message: error.message || 'An error occurred while structuring text'
+			};
+		} else {
+			errorInfo = {
+				type: 'API_ERROR',
+				code: error.status ? String(error.status) : 'UNKNOWN',
+				message: error.message || 'An error occurred while transcribing audio'
 			};
 		}
 
-		return {
-			type: 'API_ERROR',
-			code: error?.status ? String(error.status) : 'UNKNOWN',
-			message: error?.message || 'An error occurred while transcribing audio'
-		};
+		return new VoiceMDError(errorInfo);
 	}
 }

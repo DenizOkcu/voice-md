@@ -23,7 +23,7 @@ export class VoiceCommand {
 	 * Execute the voice recording command
 	 * @param editor The active editor instance
 	 */
-	async execute(editor: Editor): Promise<void> {
+	execute(editor: Editor): void {
 		// Pre-flight check: Verify API key exists
 		if (!this.settings.openaiApiKey || this.settings.openaiApiKey.trim() === '') {
 			new Notice(

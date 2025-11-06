@@ -24,7 +24,7 @@ export default class VoiceMDPlugin extends Plugin {
 			if (view) {
 				const editor = view.editor;
 				const voiceCommand = new VoiceCommand(this.app, this, this.settings);
-				voiceCommand.execute(editor);
+				void voiceCommand.execute(editor);
 			}
 		});
 
@@ -35,7 +35,7 @@ export default class VoiceMDPlugin extends Plugin {
 			icon: 'voicemail',
 			editorCallback: (editor: Editor) => {
 				const voiceCommand = new VoiceCommand(this.app, this, this.settings);
-				voiceCommand.execute(editor);
+				void voiceCommand.execute(editor);
 			}
 		});
 
@@ -69,7 +69,9 @@ class VoiceMDSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Voice MD settings'});
+		new Setting(containerEl)
+			.setName('Voice MD settings')
+			.setHeading();
 
 		new Setting(containerEl)
 			.setName('OpenAI API key')

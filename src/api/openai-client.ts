@@ -129,7 +129,7 @@ export class OpenAIClient {
 			const sampleBlob = this.createSilentAudioBlob();
 			await this.transcribe(sampleBlob);
 			return true;
-		} catch (_error) {
+		} catch {
 			return false;
 		}
 	}

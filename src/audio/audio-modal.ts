@@ -16,7 +16,7 @@ export class RecordingModal extends Modal {
 	private timerInterval: number | null = null;
 	private meetingModeEnabled: boolean = false;
 	private postProcessingEnabled: boolean = false;
-	private onRecordingComplete: (blob: Blob, enableMeetingMode: boolean, enablePostProcessing: boolean) => void;
+	private onRecordingComplete: (blob: Blob, enableMeetingMode: boolean, enablePostProcessing: boolean) => void | Promise<void>;
 	private maxDuration: number;
 	private autoStart: boolean;
 	private plugin: Plugin;
@@ -27,7 +27,7 @@ export class RecordingModal extends Modal {
 		plugin: Plugin,
 		settings: VoiceMDSettings,
 		maxDuration: number,
-		onRecordingComplete: (blob: Blob, enableMeetingMode: boolean, enablePostProcessing: boolean) => void,
+		onRecordingComplete: (blob: Blob, enableMeetingMode: boolean, enablePostProcessing: boolean) => void | Promise<void>,
 		autoStart: boolean
 	) {
 		super(app);
@@ -77,11 +77,11 @@ export class RecordingModal extends Modal {
 		postProcessingLabel.appendText(' Enable Post-Processing (Smart Formatting)');
 
 		// Wire change handler - updates both instance state and global settings
-		postProcessingCheckbox.addEventListener('change', async () => {
+		postProcessingCheckbox.addEventListener('change', () => {
 			this.postProcessingEnabled = postProcessingCheckbox.checked;
 			// Update global setting
 			this.settings.enablePostProcessing = postProcessingCheckbox.checked;
-			await this.plugin.saveData(this.settings);
+			void this.plugin.saveData(this.settings);
 		});
 
 		// Max duration info
@@ -98,13 +98,13 @@ export class RecordingModal extends Modal {
 			cls: 'mod-cta',
 			text: 'Start recording'
 		});
-		this.startBtn.addEventListener('click', () => this.startRecording());
+		this.startBtn.addEventListener('click', () => void this.startRecording());
 
 		this.stopBtn = this.controlsEl.createEl('button', {
 			cls: 'mod-warning voice-md-hidden',
 			text: 'Stop recording'
 		});
-		this.stopBtn.addEventListener('click', () => this.stopRecording());
+		this.stopBtn.addEventListener('click', () => void this.stopRecording());
 
 		this.cancelBtn = this.controlsEl.createEl('button', {
 			text: 'Cancel'
@@ -113,7 +113,7 @@ export class RecordingModal extends Modal {
 
 		// Auto-start recording if enabled
 		if (this.autoStart) {
-			this.startRecording();
+			void this.startRecording();
 		}
 	}
 
@@ -176,7 +176,7 @@ export class RecordingModal extends Modal {
 			}
 
 			// Call completion handler
-			this.onRecordingComplete(blob, this.meetingModeEnabled, this.postProcessingEnabled);
+			await this.onRecordingComplete(blob, this.meetingModeEnabled, this.postProcessingEnabled);
 
 			// Close modal
 			this.close();
@@ -197,7 +197,7 @@ export class RecordingModal extends Modal {
 
 			// Auto-stop if max duration reached
 			if (elapsed >= this.maxDuration) {
-				this.stopRecording();
+				void this.stopRecording();
 			}
 		}, 1000);
 	}
