@@ -70,14 +70,10 @@ class VoiceMDSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Voice MD settings')
-			.setHeading();
-
-		new Setting(containerEl)
 			.setName('OpenAI API key')
 			.setDesc('Enter your OpenAI API key to enable audio transcription. Get one at https://platform.openai.com/api-keys')
 			.addText(text => text
-				.setPlaceholder('sk-...')
+				.setPlaceholder('Sk-...')
 				.setValue(this.plugin.settings.openaiApiKey)
 				.onChange(async (value) => {
 					this.plugin.settings.openaiApiKey = value;
@@ -110,7 +106,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Language')
-			.setDesc('Optional: Force a specific language (e.g., "en", "es", "fr"). Leave empty for auto-detection.')
+			.setDesc('Optional: force a specific language (e.g., "en", "es", "fr"). Leave empty for auto-detection.')
 			.addText(text => text
 				.setPlaceholder('Auto-detect')
 				.setValue(this.plugin.settings.language || '')
@@ -121,7 +117,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Enable post-processing')
-			.setDesc('Structure transcriptions into formatted markdown using GPT. Creates two files: raw and structured. This feature makes additional API calls.')
+			.setDesc('Structure transcriptions into formatted Markdown using GPT, creates two files: raw and structured, this feature makes additional API calls')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enablePostProcessing)
 				.onChange(async (value) => {
@@ -135,9 +131,9 @@ class VoiceMDSettingTab extends PluginSettingTab {
 		if (this.plugin.settings.enablePostProcessing) {
 			new Setting(containerEl)
 				.setName('Chat model')
-				.setDesc('OpenAI model for post-processing (e.g., gpt-4o-mini, gpt-4o). Note: Adds cost per transcription.')
+				.setDesc('OpenAI model for post-processing (e.g., gpt-4o-mini, gpt-4o), note: adds cost per transcription')
 				.addText(text => text
-					.setPlaceholder('gpt-4o-mini')
+					.setPlaceholder('Gpt-4o-mini')
 					.setValue(this.plugin.settings.chatModel)
 					.onChange(async (value) => {
 						this.plugin.settings.chatModel = value || 'gpt-4o-mini';

@@ -27,7 +27,7 @@ export class VoiceCommand {
 		// Pre-flight check: Verify API key exists
 		if (!this.settings.openaiApiKey || this.settings.openaiApiKey.trim() === '') {
 			new Notice(
-				'OpenAI API key not configured. Please set it in Voice MD settings.',
+				'OpenAI API key not configured, please set it in Voice MD settings',
 				6000
 			);
 			return;
@@ -107,7 +107,7 @@ export class VoiceCommand {
 
 					// Show success notice with file links
 					new Notice(
-						`✓ Transcription complete! Files saved to Voice Transcriptions/`,
+						'Transcription complete, files saved to voice transcriptions',
 						5000
 					);
 
@@ -129,7 +129,7 @@ export class VoiceCommand {
 				editor.replaceSelection(formattedText);
 
 				// Show success notice
-				new Notice('✓ Transcription complete!', 3000);
+				new Notice('Transcription complete', 3000);
 			}
 
 		} catch (error) {
