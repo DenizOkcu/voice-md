@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Voice MD** is an Obsidian Community Plugin for voice-to-text transcription with AI-powered formatting. Uses OpenAI's Audio Transcription API (`gpt-4o-mini-transcribe` / `gpt-4o-transcribe-diarize`) for transcription and configurable GPT models for optional post-processing. Works on desktop and mobile (iOS/Android).
+**Voice MD** is an Obsidian Community Plugin for voice-to-text transcription with AI-powered formatting. Uses OpenAI's Audio Transcription API (`gpt-4o-mini-transcribe` / `gpt-4o-transcribe-diarize`) for transcription and configurable GPT models for optional post-processing. Bring-your-own-key (BYOK) — users provide their own OpenAI API key. Works on desktop and mobile (iOS/Android).
 
 ## Build Commands
 

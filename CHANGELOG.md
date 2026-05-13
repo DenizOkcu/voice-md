@@ -5,6 +5,33 @@ All notable changes to Voice MD will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.6] - 2025-11-06
+
+### Fixed
+- Fix Obsidian review issues: API compatibility, types, and linting
+
+## [1.2.3] - 2025-10-20
+
+### Fixed
+- Fix API compatibility and Obsidian review feedback
+
+## [1.2.2] - 2025-10-19
+
+### Changed
+- Update README for plugin submission
+
+## [1.2.1] - 2025-10-19
+
+### Fixed
+- Fix diarized JSON response format for better speaker labels
+
+## [1.2.0] - 2025-10-19
+
+### Added
+- Meeting mode with automatic speaker identification
+- GPT-4o diarization for multi-speaker transcriptions
+- Speaker label formatting in transcription output
+
 ## [1.1.3] - 2025-10-19
 
 ### Added
@@ -89,6 +116,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenAI SDK v4.20.0 integration
 - Desktop-only initial release (changed in 1.0.1)
 
+[1.2.6]: https://github.com/DenizOkcu/voice-md/releases/tag/1.2.6
+[1.2.3]: https://github.com/DenizOkcu/voice-md/releases/tag/1.2.3
+[1.2.2]: https://github.com/DenizOkcu/voice-md/releases/tag/1.2.2
+[1.2.1]: https://github.com/DenizOkcu/voice-md/releases/tag/1.2.1
+[1.2.0]: https://github.com/DenizOkcu/voice-md/releases/tag/1.2.0
 [1.1.3]: https://github.com/DenizOkcu/voice-md/releases/tag/1.1.3
 [1.1.2]: https://github.com/DenizOkcu/voice-md/releases/tag/1.1.2
 [1.1.1]: https://github.com/DenizOkcu/voice-md/releases/tag/1.1.1

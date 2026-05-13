@@ -1,4 +1,4 @@
-import { App, Editor, Notice, Plugin } from 'obsidian';
+import { App, Editor, Notice, normalizePath, Plugin } from 'obsidian';
 import { RecordingModal } from '../audio/audio-modal';
 import { OpenAIClient } from '../api/openai-client';
 import { ErrorHandler } from '../utils/error-handler';
@@ -156,7 +156,7 @@ export class VoiceCommand {
 		const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
 
 		// Define folder path
-		const folderPath = 'Voice Transcriptions';
+		const folderPath = normalizePath('Voice Transcriptions');
 
 		// Check if folder exists, create if not
 		const folderExists = this.app.vault.getAbstractFileByPath(folderPath);

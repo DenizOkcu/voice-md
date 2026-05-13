@@ -81,10 +81,6 @@ Works on iOS and Android. Audio format detection adapts to your platform (WebM o
 1. Install the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat)
 2. BRAT settings → Add Beta plugin → `DenizOkcu/voice-md`
 
-## Pricing
-
-Requires an OpenAI API key (pay-per-use). Transcription uses `gpt-4o-mini-transcribe` (standard) or `gpt-4o-transcribe-diarize` (meeting mode). Post-processing adds a GPT chat completion call. See [OpenAI pricing](https://openai.com/api/pricing/) for current rates.
-
 ## Privacy
 
 - Audio is sent to OpenAI for transcription only — never stored on disk or written to your vault
