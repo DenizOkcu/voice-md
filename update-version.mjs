@@ -83,7 +83,7 @@ try {
   console.log("\nNext steps:");
   console.log(`- Push changes: git push origin master`);
   console.log(`- Push tag: git push origin ${versionWithSuffix}`);
-  console.log(`- Create a GitHub release for tag ${versionWithSuffix} and upload the plugin files`);
+  console.log(`- CI will automatically build, attest, and create a GitHub release for tag ${versionWithSuffix}`);
   if (isBeta) {
     console.log(`  (Mark this release as a pre-release on GitHub)`);
   }
