@@ -161,7 +161,7 @@ export class VoiceCommand {
 		// Check if folder exists, create if not
 		const folderExists = this.app.vault.getAbstractFileByPath(folderPath);
 		if (!folderExists) {
-			await this.app.vault.createFolder(folderPath);
+			await this.app.vault.create(folderPath, '');
 		}
 
 		// Define file paths

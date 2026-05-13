@@ -75,7 +75,7 @@ export class VoiceMDError extends Error {
 		}
 
 		// Maintains proper stack trace for where our error was thrown (only available on V8)
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- Function type needed for V8 captureStackTrace signature
 		const ErrorWithStack = Error as unknown as { captureStackTrace?(target: Error, constructor: Function): void };
 		if (ErrorWithStack.captureStackTrace) {
 			ErrorWithStack.captureStackTrace(this, VoiceMDError);
