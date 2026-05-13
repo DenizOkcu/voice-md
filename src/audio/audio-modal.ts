@@ -149,11 +149,11 @@ export class RecordingModal extends Modal {
 		} catch (error) {
 			if (error instanceof Error) {
 				if (error.message === 'PERMISSION_DENIED') {
-					this.statusEl.setText('❌ microphone access denied');
+					this.statusEl.setText('❌ Microphone access denied');
 				} else if (error.message === 'NO_MICROPHONE') {
-					this.statusEl.setText('❌ no microphone found');
+					this.statusEl.setText('❌ No microphone found');
 				} else {
-					this.statusEl.setText('❌ failed to start recording');
+					this.statusEl.setText('❌ Failed to start recording');
 				}
 			}
 			console.error('Failed to start recording:', error);
@@ -183,13 +183,13 @@ export class RecordingModal extends Modal {
 
 		} catch (error) {
 			console.error('Failed to stop recording:', error);
-			this.statusEl.setText('❌ failed to stop recording');
+			this.statusEl.setText('❌ Failed to stop recording');
 			this.stopBtn.disabled = false;
 		}
 	}
 
 	private startTimer() {
-		let startTime = Date.now();
+		const startTime = Date.now();
 
 		this.timerInterval = window.setInterval(() => {
 			const elapsed = Math.floor((Date.now() - startTime) / 1000);

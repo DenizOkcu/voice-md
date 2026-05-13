@@ -48,7 +48,7 @@ export default class VoiceMDPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<VoiceMDSettings>);
 	}
 
 	async saveSettings() {
@@ -133,7 +133,7 @@ class VoiceMDSettingTab extends PluginSettingTab {
 				.setName('Chat model')
 				.setDesc('OpenAI model for post-processing (e.g., gpt-4o-mini, gpt-4o), note: adds cost per transcription')
 				.addText(text => text
-					.setPlaceholder('Gpt-4o-mini')
+					.setPlaceholder('gpt-4o-mini')
 					.setValue(this.plugin.settings.chatModel)
 					.onChange(async (value) => {
 						this.plugin.settings.chatModel = value || 'gpt-4o-mini';

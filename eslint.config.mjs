@@ -1,31 +1,29 @@
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
+import tseslint from "typescript-eslint";
 import js from "@eslint/js";
 import globals from "globals";
 import obsidianEslint from "eslint-plugin-obsidianmd";
 
-export default [
+export default tseslint.config(
   {
     ignores: [
       "node_modules/",
       "main.js",
-      "*.mjs", // Build scripts
-      "esbuild.config.mjs",
-      "version-bump.mjs",
-      "update-version.mjs"
+      "*.mjs",
     ]
   },
   js.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
   {
     files: ["**/*.ts"],
-    plugins: {
-      "@typescript-eslint": typescriptEslint,
-      obsidianmd: obsidianEslint
-    },
+    ...obsidianEslint.configs.recommended.reduce((merged, config) => ({
+      ...merged,
+      plugins: { ...merged.plugins, ...config.plugins },
+      rules: { ...merged.rules, ...config.rules },
+    }), { plugins: {}, rules: {} }),
     languageOptions: {
-      parser: tsParser,
       parserOptions: {
-        project: "./tsconfig.json"
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
       ecmaVersion: 2020,
       sourceType: "module",
@@ -35,7 +33,6 @@ export default [
       }
     },
     rules: {
-      // Disable base rule as it can report incorrect errors
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -45,17 +42,12 @@ export default [
           caughtErrorsIgnorePattern: "^_"
         }
       ],
-      // TypeScript overrides
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-empty-function": "off",
-      // JavaScript overrides
       "no-prototype-builtins": "off",
-      // The recommended configuration
-      ...obsidianEslint.configs.recommended,
-      // Add OpenAI, GPT, and Voice MD as recognized terms
       "obsidianmd/ui/sentence-case": ["error", {
-        ignoreRegex: ["OpenAI", "GPT", "Voice MD"]
+        ignoreRegex: ["OpenAI", "GPT", "Voice MD", "gpt-4o"]
       }]
     }
   }
-];
+);

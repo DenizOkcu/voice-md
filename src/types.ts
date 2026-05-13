@@ -76,8 +76,9 @@ export class VoiceMDError extends Error {
 		}
 
 		// Maintains proper stack trace for where our error was thrown (only available on V8)
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, VoiceMDError);
+		const ErrorWithStack = Error as unknown as { captureStackTrace?(target: Error, constructor: new (...args: unknown[]) => unknown): void };
+		if (ErrorWithStack.captureStackTrace) {
+			ErrorWithStack.captureStackTrace(this, VoiceMDError);
 		}
 	}
 }
