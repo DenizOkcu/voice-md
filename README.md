@@ -1,173 +1,108 @@
 # Voice MD
 
-Voice-to-text transcription for Obsidian powered by OpenAI's GPT-4o audio models. Record audio, transcribe with automatic speaker identification, and optionally structure output with GPT formatting—all inline.
+Record your voice, get markdown. Powered by OpenAI's latest audio models — works on desktop and mobile.
+
+Transcribe directly into your active note, or use meeting mode to identify speakers in conversations. Optionally run GPT post-processing to turn raw transcripts into structured notes with headings, lists, and paragraphs.
 
 [![GitHub release](https://img.shields.io/github/v/release/DenizOkcu/voice-md?style=flat-square)](https://github.com/DenizOkcu/voice-md/releases)
 
----
+## Quick start
 
-## Quick Start
-
-1. **Install** via Obsidian Community Plugins: Search "Voice MD"
-2. **Configure** OpenAI API key in Settings → Voice MD ([Get API key](https://platform.openai.com/api-keys))
-3. **Record** via ribbon icon or command palette (`Start Voice Recording`)
-
-Text appears at cursor position. Optional meeting mode for speaker identification, post-processing for structured markdown.
-
----
+1. Install from Obsidian Community Plugins (search "Voice MD")
+2. Add your [OpenAI API key](https://platform.openai.com/api-keys) in Settings → Voice MD
+3. Click the microphone icon in the ribbon or run "Start voice recording" from the command palette
+4. Speak. Stop. Text appears at your cursor.
 
 ## Features
 
-### Core
-- **OpenAI transcription** - `gpt-4o-mini-transcribe` (standard) / `gpt-4o-transcribe-diarize` (meeting mode)
-- **Inline insertion** - Text inserted at cursor position in active note
-- **Auto-language detection** - Or force specific language codes (`en`, `es`, `fr`, etc.)
-- **Mobile support** - iOS and Android compatible (WebM/MP4/OGG/WAV)
+### Voice-to-markdown
 
-### Meeting Mode
-Automatic speaker identification for multi-speaker recordings:
+Record audio and get a transcription inserted directly at your cursor position. Uses `gpt-4o-mini-transcribe` — fast, accurate, and supports automatic language detection. You can also force a specific language (`en`, `de`, `fr`, etc.) in settings.
+
+### Meeting mode
+
+Enable the "Meeting Mode" checkbox in the recording modal to identify speakers automatically. Uses `gpt-4o-transcribe-diarize` — best with 2–6 speakers and recordings over 30 seconds.
+
+Output looks like this:
 
 ```markdown
-**Speaker A:** Welcome to today's meeting.
-**Speaker B:** Thanks for having me. I've completed phase one.
-**Speaker A:** Great. What were the main challenges?
+**Speaker A:** Let's review the Q3 numbers.
+
+**Speaker B:** Revenue was up 12%, mostly driven by the enterprise segment.
+
+**Speaker A:** What about churn?
 ```
 
-- Toggle per-recording via checkbox in modal
-- Uses `gpt-4o-transcribe-diarize` model
-- Best with 2-6 speakers, recordings >30 seconds
-- 10-30% additional response time
+### Post-processing (smart formatting)
 
-### Post-Processing (Optional)
-GPT-powered markdown formatting creates dual files:
-- `transcription-YYYY-MM-DD-HHmmss-raw.md` - Original transcription
-- `transcription-YYYY-MM-DD-HHmmss.md` - Formatted with heading hierarchy, lists, paragraphs
+Enable the "Post-Processing" checkbox in the recording modal to run GPT formatting on your transcript. This creates two files in a `Voice Transcriptions/` folder:
 
-Features:
-- Configurable model (`gpt-4o-mini`, `gpt-4o`)
-- Custom system prompts for domain-specific formatting
-- Preserves speaker labels from meeting mode
-- Cross-linked files in `Voice Transcriptions/` folder
+- `transcription-2025-05-13-143022-raw.md` — verbatim transcript
+- `transcription-2025-05-13-143022.md` — formatted version with headings, lists, and structure
 
----
+The formatted file links back to the raw version so you never lose the original. You can configure the GPT model (`gpt-4o-mini`, `gpt-4o`, etc.) and write a custom formatting prompt for your use case.
 
-## Configuration
+Both checkboxes default to your global settings and persist changes back — so you can toggle per recording without losing your defaults.
+
+### Mobile support
+
+Works on iOS and Android. Audio format detection adapts to your platform (WebM on desktop, MP4 on iOS, OGG/WAV as fallback).
+
+## Settings
 
 **Settings → Voice MD**
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| **OpenAI API Key** | Required. Get from [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | - |
-| **Max Recording Duration** | Maximum seconds per recording | 300 |
-| **Auto-Start Recording** | Start recording immediately on modal open | false |
-| **Language** | Force language code (`en`, `es`, `fr`) or blank for auto-detect | Auto |
-| **Enable Post-Processing** | GPT-powered markdown formatting | false |
-| **Chat Model** | GPT model for post-processing | `gpt-4o-mini` |
-| **Custom Formatting Prompt** | Override default formatting instructions | - |
-
-**Note:** Meeting Mode is enabled per-recording via checkbox in modal, not global settings.
-
----
-
-## Usage
-
-### Standard Workflow
-1. Position cursor in note
-2. Click microphone icon or run `Start Voice Recording` command
-3. Speak naturally
-4. Click stop
-5. Text inserted at cursor
-
-### Meeting Mode
-1. Open recording modal
-2. Enable "Meeting Mode" checkbox
-3. Record conversation
-4. Speaker labels automatically added (`**Speaker A:**`, `**Speaker B:**`, etc.)
-
-### Post-Processing Output
-When enabled, creates two files in `Voice Transcriptions/`:
-- Raw transcription (timestamped, `-raw.md` suffix)
-- Formatted version with structure (headings, lists, paragraphs)
-- Formatted file includes link to raw: `> Raw transcription: [[...]]`
-- Formatted text inserted at cursor
-
----
-
-## Best Practices
-
-**Audio Quality**
-- Speak clearly at moderate pace
-- Minimize background noise for multi-speaker recordings
-- Pause between major points for better segmentation
-
-**Meeting Mode**
-- Optimal: 2-6 speakers
-- Minimum: 30 seconds for accurate identification
-- Clear distinct voices improve accuracy
-
-**Post-Processing**
-- Verbally mention structure ("first point", "next section")
-- Use custom prompts for specialized domains
-- Review both raw and formatted versions
-
----
+| OpenAI API key | Required. [Get one here](https://platform.openai.com/api-keys) | — |
+| Max recording duration | Maximum seconds per recording | 300 |
+| Auto-start recording | Start recording immediately when the modal opens | Off |
+| Language | Force a language code, or leave blank for auto-detect | Auto |
+| Enable post-processing | Default for the post-processing checkbox | Off |
+| Chat model | GPT model used for post-processing | `gpt-4o-mini` |
+| Custom formatting prompt | Override the default formatting instructions | — |
 
 ## Installation
 
-### Community Plugin (Recommended)
-1. Open Obsidian Settings → Community plugins
-2. Browse and search "Voice MD"
+### Community plugins (recommended)
+
+1. Settings → Community plugins → Browse
+2. Search "Voice MD"
 3. Install and enable
 
-### Manual Installation
-1. Download latest release from [GitHub Releases](https://github.com/DenizOkcu/voice-md/releases)
-2. Extract `main.js`, `manifest.json`, `styles.css` to `<vault>/.obsidian/plugins/voice-md/`
-3. Restart Obsidian
-4. Enable in Settings → Community plugins
+### Manual
 
-### Beta Testing (BRAT)
-For pre-release versions:
-1. Install [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat)
+1. Download the latest [GitHub release](https://github.com/DenizOkcu/voice-md/releases)
+2. Copy `main.js`, `manifest.json`, and `styles.css` to `<vault>/.obsidian/plugins/voice-md/`
+3. Enable in Settings → Community plugins
+
+### Beta (BRAT)
+
+1. Install the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat)
 2. BRAT settings → Add Beta plugin → `DenizOkcu/voice-md`
-
----
 
 ## Pricing
 
-Requires OpenAI API key (pay-per-use):
-- **Transcription**: `gpt-4o-mini-transcribe` / `gpt-4o-transcribe-diarize`
-- **Post-Processing**: Configurable GPT model (`gpt-4o-mini`, `gpt-4o`)
+Requires an OpenAI API key (pay-per-use). Transcription uses `gpt-4o-mini-transcribe` (standard) or `gpt-4o-transcribe-diarize` (meeting mode). Post-processing adds a GPT chat completion call. See [OpenAI pricing](https://openai.com/api/pricing/) for current rates.
 
-[View OpenAI API pricing →](https://openai.com/api/pricing/)
+## Privacy
 
----
-
-## Privacy & Security
-
-**Data Flow:**
-- Audio → OpenAI API (transcription only, ephemeral)
-- Text → OpenAI API (post-processing only, if enabled)
-- API key → Local Obsidian storage
-- Recordings → In-memory processing (never written to disk)
-
-**No telemetry, tracking, or third-party services.** See [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy) for API data handling.
-
----
+- Audio is sent to OpenAI for transcription only — never stored on disk or written to your vault
+- Post-processing sends the transcript text to OpenAI if enabled
+- Your API key stays in local Obsidian storage
+- No telemetry, no tracking, no third-party services
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| **"No API key configured"** | Add OpenAI API key in Settings → Voice MD ([Get key](https://platform.openai.com/api-keys)) |
-| **Recording doesn't start** | Check microphone permissions:<br>• macOS: System Settings → Privacy → Microphone<br>• Windows: Settings → Privacy → Microphone |
-| **Transcription fails** | • Verify API key validity<br>• Check OpenAI account credits<br>• Confirm internet connection<br>• Check console logs (Cmd/Ctrl+Shift+I) |
-| **Meeting mode no speakers** | • Recording >30 seconds<br>• Improve audio quality<br>• Verify meeting mode checkbox enabled |
-| **Post-processing fails** | • Confirm enabled in settings<br>• Verify API key model access<br>• Check OpenAI credits<br>• Review console errors |
+| Problem | Fix |
+|---------|-----|
+| No API key error | Add your [OpenAI API key](https://platform.openai.com/api-keys) in settings |
+| Recording won't start | Grant microphone permission to Obsidian in your OS settings |
+| Transcription fails | Check that your API key is valid and your OpenAI account has credits |
+| No speaker labels | Meeting mode works best with 2–6 speakers and recordings over 30 seconds |
 
----
+For anything else, open an [issue](https://github.com/DenizOkcu/voice-md/issues).
 
-## Contributing
+## License
 
-[Issues](https://github.com/DenizOkcu/voice-md/issues) • [Discussions](https://github.com/DenizOkcu/voice-md/discussions)
-
-MIT License - see [LICENSE](LICENSE)
+[MIT](LICENSE)
