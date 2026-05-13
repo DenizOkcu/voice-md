@@ -1,6 +1,6 @@
 {
   "name": "obsidian-voice-md",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "description": "Record audio and transcribe it to markdown using OpenAI Audio Transcription API",
   "main": "main.js",
   "scripts": {
@@ -35,7 +35,6 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.7.0",
-
     "esbuild": "^0.28.0",
     "eslint": "^10.3.0",
     "eslint-plugin-obsidianmd": "^0.3.0",
