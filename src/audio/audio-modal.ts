@@ -7,12 +7,12 @@ import { VoiceMDSettings } from '../types';
  */
 export class RecordingModal extends Modal {
 	private recorder: AudioRecorder;
-	private statusEl: HTMLElement;
-	private timerEl: HTMLElement;
-	private controlsEl: HTMLElement;
-	private startBtn: HTMLButtonElement;
-	private stopBtn: HTMLButtonElement;
-	private cancelBtn: HTMLButtonElement;
+	private statusEl!: HTMLElement;
+	private timerEl!: HTMLElement;
+	private controlsEl!: HTMLElement;
+	private startBtn!: HTMLButtonElement;
+	private stopBtn!: HTMLButtonElement;
+	private cancelBtn!: HTMLButtonElement;
 	private timerInterval: number | null = null;
 	private meetingModeEnabled: boolean = false;
 	private postProcessingEnabled: boolean = false;

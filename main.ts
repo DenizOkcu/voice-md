@@ -13,7 +13,7 @@ const DEFAULT_SETTINGS: VoiceMDSettings = {
 }
 
 export default class VoiceMDPlugin extends Plugin {
-	settings: VoiceMDSettings;
+	settings!: VoiceMDSettings;
 
 	async onload() {
 		await this.loadSettings();

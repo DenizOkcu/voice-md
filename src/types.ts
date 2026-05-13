@@ -14,7 +14,6 @@ export interface VoiceMDSettings {
 
 export interface RecordingState {
 	isRecording: boolean;
-	isPaused: boolean;
 	duration: number; // In seconds
 	audioBlob: Blob | null;
 }
@@ -76,7 +75,8 @@ export class VoiceMDError extends Error {
 		}
 
 		// Maintains proper stack trace for where our error was thrown (only available on V8)
-		const ErrorWithStack = Error as unknown as { captureStackTrace?(target: Error, constructor: new (...args: unknown[]) => unknown): void };
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+		const ErrorWithStack = Error as unknown as { captureStackTrace?(target: Error, constructor: Function): void };
 		if (ErrorWithStack.captureStackTrace) {
 			ErrorWithStack.captureStackTrace(this, VoiceMDError);
 		}

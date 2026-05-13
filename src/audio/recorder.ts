@@ -13,7 +13,6 @@ export class AudioRecorder {
 	constructor() {
 		this.state = {
 			isRecording: false,
-			isPaused: false,
 			duration: 0,
 			audioBlob: null
 		};
@@ -67,7 +66,6 @@ export class AudioRecorder {
 			this.startTime = Date.now();
 			this.mediaRecorder.start(100); // Collect data every 100ms
 			this.state.isRecording = true;
-			this.state.isPaused = false;
 			this.state.audioBlob = null;
 
 		} catch (error) {
@@ -75,9 +73,9 @@ export class AudioRecorder {
 
 			if (error instanceof DOMException) {
 				if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-					throw new Error('PERMISSION_DENIED');
+					throw new Error('PERMISSION_DENIED', { cause: error });
 				} else if (error.name === 'NotFoundError') {
-					throw new Error('NO_MICROPHONE');
+					throw new Error('NO_MICROPHONE', { cause: error });
 				}
 			}
 
@@ -101,9 +99,10 @@ export class AudioRecorder {
 			}
 
 			// Set up a one-time handler for when recording stops
-			const originalOnStop = this.mediaRecorder.onstop;
-			this.mediaRecorder.onstop = (ev: Event) => {
-				if (originalOnStop) originalOnStop.call(this.mediaRecorder, ev);
+			const recorder = this.mediaRecorder;
+			const originalOnStop = recorder.onstop;
+			recorder.onstop = (ev: Event) => {
+				if (originalOnStop) originalOnStop.call(recorder, ev);
 
 				if (this.state.audioBlob) {
 					resolve(this.state.audioBlob);
@@ -142,7 +141,6 @@ export class AudioRecorder {
 		this.mediaRecorder = null;
 		this.audioChunks = [];
 		this.state.isRecording = false;
-		this.state.isPaused = false;
 	}
 
 	/**
