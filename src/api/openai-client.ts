@@ -50,6 +50,7 @@ export class OpenAIClient {
 			// all parameters like timestamp_granularities for diarization
 			const transcriptionParams: OpenAI.Audio.Transcriptions.TranscriptionCreateParams & {
 				timestamp_granularities?: string[];
+				chunking_strategy?: 'auto';
 			} = {
 				file: audioFile,
 				model: model,
@@ -58,8 +59,9 @@ export class OpenAIClient {
 				response_format: responseFormat,
 			};
 
-			// Add timestamp granularities for segment-level data (required for diarization)
+			// Diarization requires automatic chunking and segment-level timestamps.
 			if (enableMeetingMode) {
+				transcriptionParams.chunking_strategy = 'auto';
 				transcriptionParams.timestamp_granularities = ['segment'];
 			}
 
